@@ -52,8 +52,8 @@ void loop() {
 
   
   long now = millis();
-  // read DHT11 sensor every 2 seconds
-  if (now - lastMsg > 5000) {
+  // read DHT11 sensor every 10 seconds
+  if (now - lastMsg > 10000) {
      lastMsg = now;
      //int led0 = DHT.read11(DHT11_PIN);
      String msg="1";     //msg = msg+"%";     //msg=msg+"1";  doesn't work cause integer
@@ -91,68 +91,96 @@ void callback(char* topic, byte* payload, unsigned int length)
 {
   Serial.print("Topic : ");
   Serial.print(topic);
-  Serial.print(" Data : ");
-  int p =(char)payload[0]-'0';
-  Serial.println(p);
+  Serial.print("  Data : ");
+//  int p =(char)payload[0]-'0';
+//  Serial.println(p);
 
-
-  if (strcmp(topic,"ds/smartlife/app")==0){
-    // whatever you want for this topic
-          // if MQTT comes a 0 message, show humidity
-      if(p==0) 
-      {
-        digitalWrite(ledPin1, LOW); // 
-        Serial.println("ledPin0=OFF");
-      } 
-      // if MQTT comes a 1 message, show temperature
-      if(p==1)
-      {
-       digitalWrite(ledPin1, HIGH);
-       Serial.println("ledPin0=ON");
-        
-      }
-        if(p==2)
-      {
-       digitalWrite(ledPin2, LOW);
-       Serial.println("ledPin1=OFF");
-        
-      }
-    
-        if(p==3)
-      {
-       digitalWrite(ledPin2, HIGH);
-       Serial.println("ledPin1=ON");
-        
-      }
-          if(p==4)
-      {
-       digitalWrite(ledPin3, LOW);
-       Serial.println("ledPin1=ON");
-        
-      }
-          if(p==5)
-      {
-       digitalWrite(ledPin3, HIGH);
-       Serial.println("ledPin1=ON");
-      }
-  }
- 
-  if (strcmp(topic,"ds/smartlife/intensity")==0) {
-    
-       //digitalWrite(ledPin3, HIGH);
-       Serial.print("pwm : ");
-       Serial.println(p);
+    // char receivedChar;
      
-    
-  }
- 
-  if (strcmp(topic,"blue")==0) {
-    // this one is blue...
-  }  
- 
-  if (strcmp(topic,"green")==0) {
-    // i forgot, is this orange?
-  }  
+
+
+        if (strcmp(topic,"ds/sl/app")==0){
+
+          char receivedChar;
+          
+          for (int i=0;i<length;i++) {
+              receivedChar = (char)payload[i];
+              Serial.print(receivedChar);
+              
+            //  if (receivedChar == '0'){
+            //    Serial.println("Got 0");
+            //  }
+            //  
+            //  if (receivedChar == '1')
+            //   Serial.println("Got 1");
+          }
+
+          
+        // whatever you want for this topic
+              // if MQTT comes a 0 message, show humidity
+          if(receivedChar=='0') 
+          {
+            digitalWrite(ledPin1, LOW); // 
+            Serial.println(" device1=OFF");
+          } 
+          // if MQTT comes a 1 message, show temperature
+          if(receivedChar=='1')
+          {
+           digitalWrite(ledPin1, HIGH);
+           Serial.println(" device1=ON");
+            
+          }
+            if(receivedChar=='2')
+          {
+           digitalWrite(ledPin2, LOW);
+           Serial.println(" device2=OFF");
+            
+          }
+        
+            if(receivedChar=='3')
+          {
+           digitalWrite(ledPin2, HIGH);
+           Serial.println(" device2=ON");
+            
+          }
+              if(receivedChar=='4')
+          {
+           digitalWrite(ledPin3, LOW);
+           Serial.println(" device3=OFF");
+            
+          }
+              if(receivedChar=='5')
+          {
+           digitalWrite(ledPin3, HIGH);
+           Serial.println(" device3=ON");
+          }
+      }
+
+
+      if (strcmp(topic,"ds/sl/i")==0) {
+        
+            int pwm;
+            //message_buff[i] = payload[i];
+            for (int i=0;i<length;i++) {
+              int = (char)payload[i];
+              Serial.print(pwm);
+               
+              //  if (receivedChar == '0'){
+              //    Serial.println("Got 0");
+              //  }
+              //  
+              //  if (receivedChar == '1')
+              //   Serial.println("Got 1");
+
+              
+              //Serial.print(rcvChar);
+            }
+            Serial.print(" pwm : ");
+            Serial.print(pwm);
+            
+              
+            
+      }  
 
    Serial.println();
 
@@ -179,10 +207,10 @@ void reconnect() {
     {
       Serial.println("connected");
      //once connected to MQTT broker, subscribe command if any
-      client.subscribe("ds/smartlife/app");
-      Serial.println("Subscribed to the topic:    ds/smartlife/app");
-      client.subscribe("ds/smartlife/intensity");
-      Serial.println("Subscribed to the topic:    ds/smartlife/intensity");
+      client.subscribe("ds/sl/app");
+      Serial.println("Subscribed to the topic:    ds/sl/app");
+      client.subscribe("ds/sl/i");
+      Serial.println("Subscribed to the topic:    ds/sl/i");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
