@@ -17,7 +17,7 @@ void loop() {
     
   for(i=0; i<=255; i++){
     analogWrite(led, i);
-    delay(5);
+    delay(10);
   }
   //analogWrite(led, 0);
 
@@ -26,7 +26,7 @@ void loop() {
     
     analogWrite(led, i);
     
-    delay(5);
+    delay(10);
   }
 
 }

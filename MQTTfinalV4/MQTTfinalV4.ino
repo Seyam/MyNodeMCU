@@ -1,20 +1,19 @@
 /*                  (____/ 
- * Use NodeMCU to drive DHT11 and send temperature/humidity value to MQTT server
- * Tutorial URL http://osoyoo.com/2016/11/24/use-nodemcu-to-send-temperaturehumidity-data-to-mqtt-iot-broker/
- * CopyRight John Yu
+ * zakir.hasan@datasoft-bd.com
+ *
  */
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
-#include <dht.h>
-dht DHT;
+//#include <dht.h>
+//dht DHT;
 
-const int ledPin1 = D1; // ONBOARD LED WORKS OPPOSITE
-const int ledPin2 = D2; // Pin
-const int ledPin3 = D3; // 
+#define ledPin1 D1 // ONBOARD LED WORKS OPPOSITE
+#define ledPin2 D2 // Pin
+#define ledPin3 D3 // 
 
 
 // Define NodeMCU D3 pin to as temperature data pin of  DHT11
-#define DHT11_PIN D3
+//#define DHT11_PIN D3
 
 // Update these with values suitable for your network.
 const char* ssid = "DataSoft_WiFi";
@@ -24,9 +23,11 @@ const char* mqtt_server = "182.48.84.180";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-long lastMsg = 0;
+
+long lastMsgTime = 0;
 char msg[5];
-int value = 0;
+int dutycycle=0;
+//int value = 0;
 
 void setup() {
   
@@ -41,7 +42,7 @@ void setup() {
   
   analogWriteFreq(500); //Set PWM frequency 500, default is 1000
   analogWriteRange(100);  //Set range 0~255, default is 0~1023
-  delay(100);
+  //delay(100);
   Serial.begin(9600);
 
   setup_wifi();
@@ -60,21 +61,22 @@ void loop() {
 
   
   long now = millis();
-  // read DHT11 sensor every 10 seconds
-  if (now - lastMsg > 3000) {
-     lastMsg = now;
+  // read DHT11 sensor every given seconds
+  if (now - lastMsgTime > 2000) {
+     lastMsgTime = now;
      
-     //Write code here 
-     //sendStatus();
+     //Write code here
+
+     //Serial.println(dutycycle);
   }
-}
+}//loop ends here
 
 
 
 
 
 void setup_wifi() {
-   delay(1000);
+   delay(100);
   // We start by connecting to a WiFi network
     Serial.print("Connecting to ");
     Serial.println(ssid);
@@ -102,8 +104,8 @@ void callback(char* topic, byte* payload, unsigned int length)
     // char receivedChar;
     
         if (strcmp(topic,"ds/sl/st")==0) {
-            
 
+            sendStatus();              
              
         }  
      
@@ -178,45 +180,55 @@ void callback(char* topic, byte* payload, unsigned int length)
 
              //if(!(analogRead(D1)==0)){
                 if (pwm == '0'){
-                    analogWrite(ledPin1, 10);
-                    Serial.print("lumen 10");
+                    dutycycle=10;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 10");
                 }
                 
                 if (pwm == '1'){
-                    analogWrite(ledPin1, 20);
-                    Serial.print("lumen 20");
+                    dutycycle=20;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 20");
                 }
                 if (pwm == '2'){
-                    analogWrite(ledPin1, 30);
-                    Serial.print("lumen 30");
+                    dutycycle=30;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 30");
                 }
                 if (pwm == '3'){
-                    analogWrite(ledPin1, 40);
-                    Serial.print("lumen 40");
+                    dutycycle=40;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 40");
                 }
                 if (pwm == '4'){
-                    analogWrite(ledPin1, 50);
-                    Serial.print("lumen 50");
+                    dutycycle=50;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 50");
                 }
                 if (pwm == '5'){
-                    analogWrite(ledPin1, 60);
-                    Serial.print("lumen 60");
+                    dutycycle=60;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 60");
                 }
                 if (pwm == '6'){
-                    analogWrite(ledPin1, 70);
-                    Serial.print("lumen 70");
+                    dutycycle=70;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 70");
                 }
                 if (pwm == '7'){
-                    analogWrite(ledPin1, 80);
-                    Serial.print("lumen 80");
+                    dutycycle=80;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 80");
                 }
                 if (pwm == '8'){
-                    analogWrite(ledPin1, 90);
-                    Serial.print("lumen 90");
+                    dutycycle=90;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 90");
                 }
                 if (pwm == '9'){
-                    analogWrite(ledPin1, 100);
-                    Serial.print("lumen 100");
+                    dutycycle=100;
+                    analogWrite(ledPin1, dutycycle);
+                    Serial.println("lumen 100");
                 }
              //}
 
@@ -272,9 +284,10 @@ void reconnect() {
 
 void sendStatus(){
            //int led0 = DHT.read11(DHT11_PIN);
-           if((analogRead(D1) > 0)){
+           //if((analogRead(D1) > 0)){     //analogRead fucntion won't work for reading pwm dutycycle 
 
-             String msg="1";     //msg = msg+"%";     //msg=msg+"1";  doesn't work cause integer
+             //String msg="3";     //msg = msg+"%";     //msg=msg+"1";  doesn't work cause integer
+             String msg = String(dutycycle);
              char message[20];
              msg.toCharArray(message,20);
              
@@ -283,11 +296,12 @@ void sendStatus(){
              Serial.print(message);
              Serial.println(" published"); 
             
-           }
+
+         
 
            if((digitalRead(D2) == HIGH)){
 
-             String msg="2";     //msg = msg+"%";     //msg=msg+"1";  doesn't work cause integer
+             String msg="3";     //msg = msg+"%";     //msg=msg+"1";  doesn't work cause integer
              char message[20];
              msg.toCharArray(message,20);
              
@@ -300,7 +314,7 @@ void sendStatus(){
 
            if((digitalRead(D3) == HIGH)){
 
-             String msg="3";     //msg = msg+"%";     //msg=msg+"1";  doesn't work cause integer
+             String msg="5";     //msg = msg+"%";     //msg=msg+"1";  doesn't work cause integer
              char message[20];
              msg.toCharArray(message,20);
              

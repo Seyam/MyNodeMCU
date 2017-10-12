@@ -8,9 +8,9 @@
 #include <dht.h>
 dht DHT;
 
-const int ledPin1 = D1; // ONBOARD LED WORKS OPPOSITE
-const int ledPin2 = D2; // Pin
-const int ledPin3 = D3; // 
+const int ledPin1 = D2; // ONBOARD LED WORKS OPPOSITE
+const int ledPin2 = D3; // Pin
+const int ledPin3 = D4; // 
 
 
 // Define NodeMCU D3 pin to as temperature data pin of  DHT11
