@@ -48,9 +48,7 @@ void setup() {
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
-//  int chk = DHT.read11(DHT11_PIN);
-//  Serial.print(" Starting Humidity: " );
-}
+}//setup ends here
 
 void loop() {
   if (!client.connected()) {
